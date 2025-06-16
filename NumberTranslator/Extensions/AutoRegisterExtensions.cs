@@ -39,9 +39,14 @@ public static class AutoRegisterExtensions
 			.Select(s => new
 			{
 				ExportedType = s,
-				ImplementedInterfaces = s.GetInterfaces().Where(q => interfaceTypes.Contains(q)).ToList()
+				MatchedInterfaces = s.GetInterfaces().Where(q => interfaceTypes.Contains(q)).ToList()
 			})
-			.Where(q => q.ImplementedInterfaces.Count > 0)
+			.Where(q => q.MatchedInterfaces.Count > 0)
+			.Select(s => new
+			{
+				s.ExportedType,
+				ImplementedInterfaces = s.ExportedType.GetInterfaces().ToList()
+			})
 			.Select(s => new TypeAndInterfaces(s.ExportedType, s.ImplementedInterfaces))
 			.ToList();
 	}
