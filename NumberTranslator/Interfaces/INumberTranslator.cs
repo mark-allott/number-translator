@@ -9,6 +9,11 @@ public interface INumberTranslator
 	bool AllowDecimals { get; }
 
 	/// <summary>
+	/// Defines the number of decimal places permitted
+	/// </summary>
+	int DecimalPlaces { get; }
+
+	/// <summary>
 	/// Flag to indicate whether to translate using currency
 	/// </summary>
 	bool AllowCurrency { get; }
