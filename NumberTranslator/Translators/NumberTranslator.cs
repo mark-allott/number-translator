@@ -107,7 +107,7 @@ public abstract class NumberTranslator
 			throw new ArgumentNullException(nameof(text));
 
 		//	Tidy the input text, removing expected currency symbols if permitted
-		var input = (AllowCurrency
+		var input = (AllowCurrency && !Culture.IsNeutralCulture
 			? text.Replace(Culture.NumberFormat.CurrencySymbol, "")
 			: text).Trim();
 
