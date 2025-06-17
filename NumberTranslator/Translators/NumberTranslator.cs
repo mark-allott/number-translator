@@ -35,11 +35,25 @@ public abstract class NumberTranslator
 
 		//	Store property values
 		AllowDecimals = allowDecimals;
-		DecimalPlaces = decimalPlaces;
 		AllowCurrency = allowCurrency;
+		//	Decimal places are one of:
+		//		Zero - allowDecimals is false
+		//		The value of decimalPlaces if currency is not being used
+		//		The number of places reported by the Culture's NumberFormat information
+		DecimalPlaces = allowDecimals
+			? allowCurrency
+				? Culture.NumberFormat.CurrencyDecimalDigits
+				: decimalPlaces
+			: 0;
 		//	Ensure min/max are the correct way around and also adhere to declared decimal place precision
-		MinimumValue = Math.Round(Math.Min(minimumValue, maximumValue), decimalPlaces);
-		MaximumValue = Math.Round(Math.Max(minimumValue, maximumValue), decimalPlaces);
+		MinimumValue = Math.Round(Math.Min(minimumValue, maximumValue), DecimalPlaces);
+		MaximumValue = Math.Round(Math.Max(minimumValue, maximumValue), DecimalPlaces);
+
+		var absMax = Math.Max(Math.Abs(MinimumValue), Math.Abs(MaximumValue));
+		if (absMax > long.MaxValue)
+			throw new ArgumentOutOfRangeException(absMax == Math.Abs(MaximumValue)
+				? nameof(maximumValue)
+				: nameof(minimumValue), "Number exceeds precision capability");
 	}
 
 	#endregion Ctor
