@@ -132,7 +132,7 @@ public abstract class NumberTranslator
 			throw new ArgumentOutOfRangeException(nameof(text), value, "Decimal parts are not permitted");
 
 		//	Perform rounding on the input text value to the correct number of places
-		value = Math.Round(value, DecimalPlaces);
+		value = Math.Round(value, DecimalPlaces, AllowCurrency ? MidpointRounding.AwayFromZero : MidpointRounding.ToEven);
 
 		//	Bounds check
 		if (value < MinimumValue || value > MaximumValue)
