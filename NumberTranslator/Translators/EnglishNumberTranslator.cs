@@ -70,7 +70,22 @@ public class EnglishNumberTranslator
 	/// <param name="minimumValue">The minimum value permitted for the translator</param>
 	/// <param name="maximumValue">The maximum value permitted for the translator</param>
 	public EnglishNumberTranslator(bool allowDecimals, int decimalPlaces, bool allowCurrency, double minimumValue, double maximumValue)
-		: base("en", allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue)
+		: this("en", allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue)
+	{
+	}
+
+	/// <summary>
+	/// Alternate constructor for use by subclasses which need to set the specific language code - e.g. en-gb or en-us, etc.
+	/// </summary>
+	/// <param name="languageCode">The language code for the culture</param>
+	/// <param name="allowDecimals">Specifies whether the translation allows decimals</param>
+	/// <param name="decimalPlaces">Specifies the number of decimal places to report (if permitted)</param>
+	/// <param name="allowCurrency">Specifies whether the translation should include currency</param>
+	/// <param name="minimumValue">The minimum value permitted for the translator</param>
+	/// <param name="maximumValue">The maximum value permitted for the translator</param>
+	protected EnglishNumberTranslator(string languageCode, bool allowDecimals, int decimalPlaces, bool allowCurrency,
+		double minimumValue, double maximumValue)
+		: base(languageCode, allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue)
 	{
 	}
 
