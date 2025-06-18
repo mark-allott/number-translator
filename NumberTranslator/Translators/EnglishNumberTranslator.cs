@@ -123,7 +123,7 @@ public class EnglishNumberTranslator
 
 		//	If currency is being reported, add the whole unit word
 		if (AllowCurrency && !string.IsNullOrWhiteSpace(CurrencyIntegerName))
-			sb.Append($" {CurrencyIntegerName}");
+			sb.Append($" {CurrencyIntegerName}{(integerPart != 1 ? "s" : "")}");
 
 		//	If decimals are permitted, add any fractional parts (if present)
 		if (AllowDecimals && fractionalPart > 0)
@@ -132,7 +132,7 @@ public class EnglishNumberTranslator
 			if (AllowCurrency)
 				sb.Append(" and ")
 					.Append(ConvertTwoDigit(fractionalPart))
-					.Append(string.IsNullOrWhiteSpace(CurrencyFractionalName) ? "" : $"{CurrencyFractionalName}{(integerPart != 1 ? "s" : "")}");
+					.Append(string.IsNullOrWhiteSpace(CurrencyFractionalName) ? "" : $" {CurrencyFractionalName}");
 			else
 			{
 				// non-currency fractional parts are listed as single digit words separated by spaces - e.g.
