@@ -1,8 +1,56 @@
-﻿namespace NumberTranslator.Translators;
+﻿using System;
+using System.Linq;
+using System.Text;
+
+namespace NumberTranslator.Translators;
 
 public class EnglishNumberTranslator
 	: NumberTranslator
 {
+	#region Fields
+
+	private static readonly string[] UnderTwenty = new[]
+	{
+		"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve",
+		"thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"
+	};
+
+	private static readonly string[] Decadal = new[]
+	{
+		"", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"
+	};
+
+	/// <summary>
+	/// Holds names for number groupings from 10^3 to 10^18 (double maxes out at ~1.8x10^308), but
+	/// precision is only approx. 17 digits. Naming system retrieved from https://simple.wikipedia.org/wiki/Names_of_large_numbers#Names_for_large_numbers
+	/// </summary>
+	private static readonly string[] NumberGroupName = new[]
+	{
+		"",
+		"thousand",		//	10^3
+		"million",		//	10^6
+		"billion",		//	10^9
+		"trillion",		//	10^12
+		"quadrillion",	//	10^15
+		"quintillion",	//	10^18
+	};
+
+	#endregion Fields
+
+	#region Properties
+
+	/// <summary>
+	/// Allows subclasses to define the name of whole currency units - e.g. pounds/euros/dollars
+	/// </summary>
+	public string CurrencyIntegerName { get; protected set; } = "";
+
+	/// <summary>
+	/// Allows subclasses to define the name of fractional currency units -e.g. pence/cents
+	/// </summary>
+	public string CurrencyFractionalName { get; protected set; } = "";
+
+	#endregion Properties
+
 	#region Ctor
 
 	/// <summary>
@@ -31,15 +79,146 @@ public class EnglishNumberTranslator
 	#region NumberTranslator overloads
 
 	/// <summary>
-	/// Handles the conversion of <param name="text"></param> into the british word-form equivalent
+	/// Handles the conversion of <param name="text"></param> into the English word-form equivalent
 	/// </summary>
-	/// <param name="text">The text to convert (which will have been pre-sanitised</param>
+	/// <param name="text">The text to convert (which will have been pre-sanitised beforehand)</param>
 	/// <returns>The word form for the digits provided</returns>
 	/// <exception cref="System.NotImplementedException"></exception>
 	protected override string DoTranslation(string text)
 	{
-		throw new System.NotImplementedException();
+		//	Convert text to numeric value
+		var value = GetValue(text);
+		//	Determine if negative
+		var isNegative = Math.Sign(value) == -1;
+		//	Convert to absolute value
+		value = Math.Abs(value);
+		//	Extract integer portion of value
+		var integerPart = Convert.ToInt64(value);
+		//	Extract fractional part of value and convert to integer equivalent
+		var fractionalPart = Convert.ToInt64(Math.Pow(10, DecimalPlaces) * (value % 1));
+
+		var sb = new StringBuilder();
+
+		//	If negative, prepend everything with the "negative" word
+		if (isNegative)
+			sb.Append("negative ");
+
+		//	Add grouped textual values
+		sb.Append(ConvertToGroupedText(integerPart));
+
+		//	If currency is being reported, add the whole unit word
+		if (AllowCurrency && !string.IsNullOrWhiteSpace(CurrencyIntegerName))
+			sb.Append($" {CurrencyIntegerName}");
+
+		//	If decimals are permitted, add any fractional parts (if present)
+		if (AllowDecimals && fractionalPart > 0)
+		{
+			//	If using currency, report the two-digit value and the fractional currency unit name
+			if (AllowCurrency)
+				sb.Append(" and ")
+					.Append(ConvertTwoDigit(fractionalPart))
+					.Append(string.IsNullOrWhiteSpace(CurrencyFractionalName) ? "" : $"{CurrencyFractionalName}{(integerPart != 1 ? "s" : "")}");
+			else
+			{
+				// non-currency fractional parts are listed as single digit words separated by spaces - e.g.
+				// the fractional part of PI to 3 places would be "point one four one"
+				var digits = $"{fractionalPart.ToString(new string('0', DecimalPlaces))}".ToCharArray()
+					.Select(s => int.Parse($"{s}"))
+					.Select(i => ConvertTwoDigit(i))
+					//	Reverse the order so checking of trailing zero can be performed
+					.Reverse()
+					.ToList();
+				//	Remove all trailing zero values as these should not be reported
+				while (digits[0] == UnderTwenty[0])
+					digits = digits[1..];
+				//	Put digits back into correct order
+				digits.Reverse();
+				//	Append the digits of interest
+				sb.Append(" point ")
+					.Append(string.Join(" ", digits));
+			}
+		}
+
+		return sb.ToString();
 	}
 
 	#endregion NumberTranslator overloads
+
+	#region Methods
+
+	/// <summary>
+	/// Converts the <paramref name="value"/> supplied into word form for a two-digit number
+	/// </summary>
+	/// <param name="value">The number to translate to words in the range 0-99</param>
+	/// <returns>The word form for <paramref name="value"/></returns>
+	/// <exception cref="ArgumentOutOfRangeException"></exception>
+	private string ConvertTwoDigit(long value)
+	{
+		if (value > 99)
+			throw new ArgumentOutOfRangeException(nameof(value), value, "Exceeds two-digit value");
+
+		if (value < 20)
+			return UnderTwenty[value];
+
+		var tens = Math.DivRem(value, 10, out var units);
+		return units > 0
+			? $"{Decadal[tens]}-{UnderTwenty[units]}"
+			: $"{Decadal[tens]}";
+	}
+
+	/// <summary>
+	/// Converts the <paramref name="value"/> supplied into word form for a three-digit number.
+	/// Checks are made to verify whether a series of words should be emitted - e.g. a zero value should not return anything as it should have been handled elsewhere
+	/// </summary>
+	/// <param name="value">The number to translate to words in the range 0-99</param>
+	/// <returns>The word form for <paramref name="value"/></returns>
+	/// <exception cref="ArgumentOutOfRangeException"></exception>
+	private string ConvertThreeDigit(long value)
+	{
+		if (value > 999)
+			throw new ArgumentOutOfRangeException(nameof(value), value, "Exceeds three-digit value");
+
+		if (value == 0)
+			return "";
+
+		var sb = new StringBuilder();
+		var hundreds = Math.DivRem(value, 100, out var twoDigits);
+		if (hundreds > 0)
+		{
+			sb.Append(UnderTwenty[hundreds])
+				.Append(" hundred");
+			if (twoDigits > 0)
+				sb.Append(" and ");
+		}
+
+		if (twoDigits > 0)
+			sb.Append(ConvertTwoDigit(twoDigits));
+		return sb.ToString();
+	}
+
+	private string ConvertToGroupedText(long value)
+	{
+		if (value < 100)
+			return ConvertTwoDigit(value);
+
+		if (value < 1000)
+			return ConvertThreeDigit(value);
+
+		var sb = new StringBuilder();
+		for (var i = NumberGroupName.Length - 1; i >= 0; i--)
+		{
+			var p = Convert.ToInt64(Math.Pow(1000, i));
+
+			var v = Math.DivRem(value, p, out var remainder);
+			if (v > 0)
+				sb.Append(ConvertThreeDigit(v))
+					.Append(i > 0 ? $" {NumberGroupName[i]}" : "")
+					.Append(remainder switch { 0 => "", < 100 => " and ", _ => ", " });
+			value = remainder;
+		}
+
+		return sb.ToString();
+	}
+
+	#endregion Methods
 }
