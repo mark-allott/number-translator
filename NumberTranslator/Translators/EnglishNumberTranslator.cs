@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using NumberTranslator.Interfaces;
+using NumberTranslator.Strategies;
 
 namespace NumberTranslator.Translators;
 
@@ -40,14 +42,48 @@ public class EnglishNumberTranslator
 	#region Properties
 
 	/// <summary>
-	/// Allows subclasses to define the name of whole currency units - e.g. pounds/euros/dollars
+	/// Returns the singular name for the currency unit
 	/// </summary>
-	public string CurrencyIntegerName { get; protected set; } = "";
+	public string CurrencyIntegralPartSingularName
+	{
+		get
+		{
+			return base.CurrencyNamingStrategy.CurrencyIntegralPartName(1);
+		}
+	}
 
 	/// <summary>
-	/// Allows subclasses to define the name of fractional currency units -e.g. pence/cents
+	/// Returns the plural name for the currency unit
 	/// </summary>
-	public string CurrencyFractionalName { get; protected set; } = "";
+	public string CurrencyIntegralPartPluralName
+	{
+		get
+		{
+			return base.CurrencyNamingStrategy.CurrencyIntegralPartName(2);
+		}
+	}
+
+	/// <summary>
+	/// Returns the singular name for the fractional currency unit
+	/// </summary>
+	public string CurrencyFractionalPartSingularName
+	{
+		get
+		{
+			return base.CurrencyNamingStrategy.CurrencyFractionalPartName(1);
+		}
+	}
+
+	/// <summary>
+	/// Returns the plural name for the fractional currency unit
+	/// </summary>
+	public string CurrencyFractionalPartPluralName
+	{
+		get
+		{
+			return base.CurrencyNamingStrategy.CurrencyFractionalPartName(2);
+		}
+	}
 
 	#endregion Properties
 
@@ -70,7 +106,7 @@ public class EnglishNumberTranslator
 	/// <param name="minimumValue">The minimum value permitted for the translator</param>
 	/// <param name="maximumValue">The maximum value permitted for the translator</param>
 	public EnglishNumberTranslator(bool allowDecimals, int decimalPlaces, bool allowCurrency, double minimumValue, double maximumValue)
-		: this("en", allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue)
+		: this("en", allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue, new DefaultCurrencyNamingStrategy())
 	{
 	}
 
@@ -83,9 +119,10 @@ public class EnglishNumberTranslator
 	/// <param name="allowCurrency">Specifies whether the translation should include currency</param>
 	/// <param name="minimumValue">The minimum value permitted for the translator</param>
 	/// <param name="maximumValue">The maximum value permitted for the translator</param>
+	/// <param name="currencyNamingStrategy">The naming strategy for currency units</param>
 	protected EnglishNumberTranslator(string languageCode, bool allowDecimals, int decimalPlaces, bool allowCurrency,
-		double minimumValue, double maximumValue)
-		: base(languageCode, allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue)
+		double minimumValue, double maximumValue, ICurrencyNamingStrategy currencyNamingStrategy)
+		: base(languageCode, allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue, currencyNamingStrategy)
 	{
 	}
 
@@ -122,8 +159,8 @@ public class EnglishNumberTranslator
 		sb.Append(ConvertToGroupedText(integerPart));
 
 		//	If currency is being reported, add the whole unit word
-		if (AllowCurrency && !string.IsNullOrWhiteSpace(CurrencyIntegerName))
-			sb.Append($" {CurrencyIntegerName}{(integerPart != 1 ? "s" : "")}");
+		if (AllowCurrency && !string.IsNullOrWhiteSpace(CurrencyIntegralPartSingularName))
+			sb.Append($" {CurrencyNamingStrategy.CurrencyIntegralPartName(integerPart)}");
 
 		//	If decimals are permitted, add any fractional parts (if present)
 		if (AllowDecimals && fractionalPart > 0)
@@ -132,7 +169,7 @@ public class EnglishNumberTranslator
 			if (AllowCurrency)
 				sb.Append(" and ")
 					.Append(ConvertTwoDigit(fractionalPart))
-					.Append(string.IsNullOrWhiteSpace(CurrencyFractionalName) ? "" : $" {CurrencyFractionalName}");
+					.Append(string.IsNullOrWhiteSpace(CurrencyFractionalPartSingularName) ? "" : $" {CurrencyNamingStrategy.CurrencyFractionalPartName(fractionalPart)}");
 			else
 			{
 				// non-currency fractional parts are listed as single digit words separated by spaces - e.g.

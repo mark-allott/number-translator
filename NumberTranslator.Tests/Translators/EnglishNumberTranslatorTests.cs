@@ -24,8 +24,10 @@ public class EnglishNumberTranslatorTests
 		DefaultTranslator.DecimalPlaces.Should().Be(0);
 		DefaultTranslator.MinimumValue.Should().Be(0.0d);
 		DefaultTranslator.MaximumValue.Should().Be(9999.0d);
-		DefaultTranslator.CurrencyIntegerName.Should().Be("");
-		DefaultTranslator.CurrencyFractionalName.Should().Be("");
+		DefaultTranslator.CurrencyIntegralPartSingularName.Should().Be("");
+		DefaultTranslator.CurrencyIntegralPartPluralName.Should().Be("");
+		DefaultTranslator.CurrencyFractionalPartSingularName.Should().Be("");
+		DefaultTranslator.CurrencyFractionalPartPluralName.Should().Be("");
 	}
 
 	[TestMethod]
@@ -77,8 +79,10 @@ public class EnglishNumberTranslatorTests
 		DefaultTranslatorWithNegatives.DecimalPlaces.Should().Be(0);
 		DefaultTranslatorWithNegatives.MinimumValue.Should().Be(-9999.0d);
 		DefaultTranslatorWithNegatives.MaximumValue.Should().Be(9999.0d);
-		DefaultTranslatorWithNegatives.CurrencyIntegerName.Should().Be("");
-		DefaultTranslatorWithNegatives.CurrencyFractionalName.Should().Be("");
+		DefaultTranslatorWithNegatives.CurrencyIntegralPartSingularName.Should().Be("");
+		DefaultTranslatorWithNegatives.CurrencyIntegralPartPluralName.Should().Be("");
+		DefaultTranslatorWithNegatives.CurrencyFractionalPartSingularName.Should().Be("");
+		DefaultTranslatorWithNegatives.CurrencyFractionalPartPluralName.Should().Be("");
 	}
 
 	[TestMethod]
@@ -139,8 +143,10 @@ public class EnglishNumberTranslatorTests
 		DefaultTranslatorWithDecimalPlaces.DecimalPlaces.Should().Be(5);
 		DefaultTranslatorWithDecimalPlaces.MinimumValue.Should().Be(0.0d);
 		DefaultTranslatorWithDecimalPlaces.MaximumValue.Should().Be(9999.0d);
-		DefaultTranslatorWithDecimalPlaces.CurrencyIntegerName.Should().Be("");
-		DefaultTranslatorWithDecimalPlaces.CurrencyFractionalName.Should().Be("");
+		DefaultTranslatorWithDecimalPlaces.CurrencyIntegralPartSingularName.Should().Be("");
+		DefaultTranslatorWithDecimalPlaces.CurrencyIntegralPartPluralName.Should().Be("");
+		DefaultTranslatorWithDecimalPlaces.CurrencyFractionalPartSingularName.Should().Be("");
+		DefaultTranslatorWithDecimalPlaces.CurrencyFractionalPartPluralName.Should().Be("");
 	}
 
 	[TestMethod]
@@ -193,8 +199,10 @@ public class EnglishNumberTranslatorTests
 		DefaultTranslatorWithCurrencyAndNegatives.DecimalPlaces.Should().Be(ci.NumberFormat.CurrencyDecimalDigits);
 		DefaultTranslatorWithCurrencyAndNegatives.MinimumValue.Should().Be(-9999.0d);
 		DefaultTranslatorWithCurrencyAndNegatives.MaximumValue.Should().Be(9999.0d);
-		DefaultTranslatorWithCurrencyAndNegatives.CurrencyIntegerName.Should().Be("");
-		DefaultTranslatorWithCurrencyAndNegatives.CurrencyFractionalName.Should().Be("");
+		DefaultTranslatorWithCurrencyAndNegatives.CurrencyIntegralPartSingularName.Should().Be("");
+		DefaultTranslatorWithCurrencyAndNegatives.CurrencyIntegralPartPluralName.Should().Be("");
+		DefaultTranslatorWithCurrencyAndNegatives.CurrencyFractionalPartSingularName.Should().Be("");
+		DefaultTranslatorWithCurrencyAndNegatives.CurrencyFractionalPartPluralName.Should().Be("");
 	}
 
 	[TestMethod]
