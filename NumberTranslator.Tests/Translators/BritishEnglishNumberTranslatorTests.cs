@@ -18,8 +18,10 @@ public class BritishEnglishNumberTranslatorTests
 		DefaultTranslator.DecimalPlaces.Should().Be(2);
 		DefaultTranslator.MinimumValue.Should().Be(-9999.0d);
 		DefaultTranslator.MaximumValue.Should().Be(9999.0d);
-		DefaultTranslator.CurrencyIntegerName.Should().Be("pound");
-		DefaultTranslator.CurrencyFractionalName.Should().Be("pence");
+		DefaultTranslator.CurrencyIntegralPartSingularName.Should().Be("pound");
+		DefaultTranslator.CurrencyIntegralPartPluralName.Should().Be("pounds");
+		DefaultTranslator.CurrencyFractionalPartSingularName.Should().Be("penny");
+		DefaultTranslator.CurrencyFractionalPartPluralName.Should().Be("pence");
 	}
 
 	[TestMethod]
@@ -35,7 +37,7 @@ public class BritishEnglishNumberTranslatorTests
 	[DataRow(1.126d, "one pound and thirteen pence")]
 	//	Verify zero is not truncated if numbers are present afterwards
 	[DataRow(0.1d, "zero pounds and ten pence")]
-	[DataRow(0.01d, "zero pounds and one pence")]
+	[DataRow(0.01d, "zero pounds and one penny")]
 	[DataRow(0.001d, "zero pounds")]
 	//	Check some negatives
 	[DataRow(-1, "negative one pound")]

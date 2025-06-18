@@ -1,4 +1,6 @@
-﻿namespace NumberTranslator.Translators;
+﻿using NumberTranslator.Strategies;
+
+namespace NumberTranslator.Translators;
 
 public class BritishEnglishNumberTranslator
 	: EnglishNumberTranslator
@@ -11,10 +13,8 @@ public class BritishEnglishNumberTranslator
 	}
 
 	public BritishEnglishNumberTranslator(bool allowDecimals, int decimalPlaces, bool allowCurrency, double minimumValue, double maximumValue)
-		: base("en-gb", allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue)
+		: base("en-gb", allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue, new BritishCurrencyNamingStrategy())
 	{
-		CurrencyIntegerName = "pound";
-		CurrencyFractionalName = "pence";
 	}
 
 	#endregion Ctor
