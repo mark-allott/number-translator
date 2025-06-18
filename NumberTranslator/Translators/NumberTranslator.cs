@@ -14,12 +14,18 @@ public abstract class NumberTranslator
 	/// </summary>
 	protected CultureInfo Culture { get; }
 
+	/// <summary>
+	/// An instance of a currency naming strategy used to put names to currency units
+	/// </summary>
+	protected ICurrencyNamingStrategy CurrencyNamingStrategy { get; }
+
 	#endregion Fields
 
 	#region Ctor
 
 	/// <summary>
-	/// Default constructor, allowing specification of culture, decimal provision, inclusion of currency as well as min/max values
+	/// Default constructor, allowing specification of culture, decimal provision, inclusion of
+	/// currency as well as min/max values
 	/// </summary>
 	/// <param name="languageCode">The language code for the culture</param>
 	/// <param name="allowDecimals">Specifies whether the translation allows decimals</param>
@@ -27,7 +33,9 @@ public abstract class NumberTranslator
 	/// <param name="allowCurrency">Specifies whether the translation should include currency</param>
 	/// <param name="minimumValue">The minimum value permitted for the translator</param>
 	/// <param name="maximumValue">The maximum value permitted for the translator</param>
-	protected NumberTranslator(string languageCode, bool allowDecimals, int decimalPlaces, bool allowCurrency, double minimumValue, double maximumValue)
+	/// <param name="currencyNamingStrategy">The strategy used to define currency unit naming</param>
+	protected NumberTranslator(string languageCode, bool allowDecimals, int decimalPlaces, bool allowCurrency,
+		double minimumValue, double maximumValue, ICurrencyNamingStrategy currencyNamingStrategy)
 	{
 		//	Attempt to initialise a culture with the passed parameter
 		//	If it does not work, we won't proceed with it
@@ -36,6 +44,7 @@ public abstract class NumberTranslator
 		//	Store property values
 		AllowDecimals = allowDecimals;
 		AllowCurrency = allowCurrency;
+		CurrencyNamingStrategy = currencyNamingStrategy;
 		//	Decimal places are one of:
 		//		Zero - allowDecimals is false
 		//		The value of decimalPlaces if currency is not being used
