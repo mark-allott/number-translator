@@ -115,6 +115,21 @@ public abstract class NumberTranslator
 
 	#endregion INumberTranslator implementation
 
+	#region Overrides from base classes
+
+	/// <summary>
+	/// Override base hashcode calculation to use properties of this class which can be used to
+	/// determine uniqueness
+	/// </summary>
+	/// <returns>The new hashcode</returns>
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(LanguageCodeId, AllowCurrency, AllowDecimals, DecimalPlaces, MinimumValue,
+			MaximumValue);
+	}
+
+	#endregion Overrides from base classes
+
 	#region Methods
 
 	/// <summary>
