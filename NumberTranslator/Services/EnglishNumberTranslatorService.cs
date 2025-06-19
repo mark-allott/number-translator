@@ -7,12 +7,6 @@ namespace NumberTranslator.Services;
 public class EnglishNumberTranslatorService
 	: NumberTranslatorService
 {
-	#region Fields
-
-	private readonly INumberTranslator _translator;
-
-	#endregion Fields
-
 	#region ctor
 
 	/// <summary>
