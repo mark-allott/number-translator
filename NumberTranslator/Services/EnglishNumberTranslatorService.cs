@@ -1,5 +1,5 @@
 ﻿using System;
-using NumberTranslator.Interfaces;
+using System.Text;
 using NumberTranslator.Translators;
 
 namespace NumberTranslator.Services;
@@ -7,12 +7,6 @@ namespace NumberTranslator.Services;
 public class EnglishNumberTranslatorService
 	: NumberTranslatorService
 {
-	#region Fields
-
-	private readonly INumberTranslator _translator;
-
-	#endregion Fields
-
 	#region ctor
 
 	/// <summary>
@@ -21,7 +15,7 @@ public class EnglishNumberTranslatorService
 	public EnglishNumberTranslatorService()
 		: base("en")
 	{
-		_translator = new EnglishNumberTranslator();
+		base.Translator = new EnglishNumberTranslator();
 	}
 
 	#endregion ctor
@@ -34,11 +28,14 @@ public class EnglishNumberTranslatorService
 	{
 		try
 		{
-			return _translator.Translate(text);
+			return Translator.Translate(text);
 		}
 		catch (Exception e)
 		{
-			return $"Unable to translate '{text}'. Translator issued the following error message: '{e.Message}'";
+			var sb = new StringBuilder();
+			sb.AppendLine($"Unable to translate '{text}'. Translator issued the following error message:")
+				.AppendLine($"'{e.Message}'");
+			return sb.ToString();
 		}
 	}
 
