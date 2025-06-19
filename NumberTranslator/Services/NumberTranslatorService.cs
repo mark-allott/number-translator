@@ -10,6 +10,12 @@ namespace NumberTranslator.Services;
 public abstract class NumberTranslatorService
 	: TranslatorService, INumberTranslatorService
 {
+	#region Fields
+
+	protected INumberTranslator Translator = null!;
+
+	#endregion Fields
+
 	#region Properties
 
 	/// <inheritdoc />
@@ -17,6 +23,10 @@ public abstract class NumberTranslatorService
 
 	/// <inheritdoc />
 	public string LanguageName { get; }
+
+	public double MinimumValue => Translator?.MinimumValue ?? double.MinValue;
+
+	public double MaximumValue => Translator?.MaximumValue ?? double.MaxValue;
 
 	#endregion Properties
 
