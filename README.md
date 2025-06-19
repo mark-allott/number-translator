@@ -15,3 +15,12 @@
 1. Special cases where "missing" elements should be handled correctly:
   1. When the input is 1001, the output should be one thousand and one
   1. When the input is 2300, the output should be two thousand, three hundred
+
+## UI Details
+1. A console application is used as the interface
+1. Enter any number to attempt to perform a translation.
+  1. Any attempt to enter a value outside the accepted default range of 0-9999 shall display an error message
+  1. Any attempt to enter a blank input shall display an error message
+  1. Any attempt to enter values containing decimals shall display an error message
+  1. Any attempt to enter non-numeric values shall display an error message
+1. Terminate the application by typing `quit` in the prompt
