@@ -113,6 +113,12 @@ public abstract class NumberTranslator
 	/// <inheritdoc />
 	public double MaximumValue { get; }
 
+	/// <inheritdoc />
+	public string GetKey()
+	{
+		return CalculateKey(LanguageCodeId, AllowCurrency, AllowDecimals, DecimalPlaces, MinimumValue, MaximumValue);
+	}
+
 	#endregion INumberTranslator implementation
 
 	#region Overrides from base classes
@@ -124,8 +130,7 @@ public abstract class NumberTranslator
 	/// <returns>The new hashcode</returns>
 	public override int GetHashCode()
 	{
-		return HashCode.Combine(LanguageCodeId, AllowCurrency, AllowDecimals, DecimalPlaces, MinimumValue,
-			MaximumValue);
+		return HashCode.Combine(CalculateKey(LanguageCodeId, AllowCurrency, AllowDecimals, DecimalPlaces, MinimumValue, MaximumValue));
 	}
 
 	#endregion Overrides from base classes
@@ -196,6 +201,22 @@ public abstract class NumberTranslator
 		return isValidating
 			? value
 			: Math.Round(value, DecimalPlaces);
+	}
+
+	/// <summary>
+	/// Provide a static method to calculate a hashcode for a given set of parameters
+	/// </summary>
+	/// <param name="languageCodeId">The language code ID</param>
+	/// <param name="allowCurrency">Flag to indicate whether currency is to be used</param>
+	/// <param name="allowDecimals">Flag to indicate whether decimal places are permitted</param>
+	/// <param name="decimalPlaces">The number of decimal places to use (if permitted)</param>
+	/// <param name="minValue">The minimum value permitted in a translation</param>
+	/// <param name="maxValue">The maximum value permitted in a translation</param>
+	/// <returns></returns>
+	public static string CalculateKey(string languageCodeId, bool allowCurrency, bool allowDecimals,
+		int decimalPlaces, double minValue, double maxValue)
+	{
+		return $"{languageCodeId}|{allowCurrency}|{allowDecimals}|{decimalPlaces}|{minValue}|{maxValue}";
 	}
 
 	#endregion Methods
