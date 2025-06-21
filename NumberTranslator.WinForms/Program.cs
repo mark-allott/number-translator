@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using NumberTranslator.Extensions;
 
 namespace NumberTranslator.WinForms
 {
@@ -25,6 +26,7 @@ namespace NumberTranslator.WinForms
 
 		private static ServiceCollection ConfigureServices(ServiceCollection services)
 		{
+			services.AddAutoRegisterServices(typeof(Translators.NumberTranslator).Assembly);
 			services.AddScoped(typeof(NumberTranslatorForm));
 			return services;
 		}
