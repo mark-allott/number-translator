@@ -27,4 +27,9 @@ public interface INumberTranslator
 	/// Defines the maximum permitted value for the input
 	/// </summary>
 	double MaximumValue { get; }
+
+	/// <summary>
+	/// Returns a key for the translator based on values specified in other properties
+	/// </summary>
+	string GetKey();
 }
