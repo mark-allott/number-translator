@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumberTranslator", "NumberTranslator\NumberTranslator.csproj", "{5B2F5992-8EAA-41A0-ADFE-7EE7FA86C3F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumberTranslator.Console", "NumberTranslator.Console\NumberTranslator.Console.csproj", "{0E3985B2-3535-5392-293F-C4A9FC66FB2F}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NumberTranslator.Tests", "NumberTranslator.Tests\NumberTranslator.Tests.csproj", "{8747E35A-7090-4C2D-AFC5-AD860B39F233}"
 EndProject
 Global
@@ -25,6 +27,10 @@ Global
 		{5B2F5992-8EAA-41A0-ADFE-7EE7FA86C3F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B2F5992-8EAA-41A0-ADFE-7EE7FA86C3F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B2F5992-8EAA-41A0-ADFE-7EE7FA86C3F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E3985B2-3535-5392-293F-C4A9FC66FB2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E3985B2-3535-5392-293F-C4A9FC66FB2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E3985B2-3535-5392-293F-C4A9FC66FB2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E3985B2-3535-5392-293F-C4A9FC66FB2F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8747E35A-7090-4C2D-AFC5-AD860B39F233}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8747E35A-7090-4C2D-AFC5-AD860B39F233}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8747E35A-7090-4C2D-AFC5-AD860B39F233}.Release|Any CPU.ActiveCfg = Release|Any CPU
