@@ -23,7 +23,7 @@ public class NumberTranslatorFactory
 
 	#endregion Fields
 
-	#region Properites
+	#region Properties
 
 	/// <summary>
 	/// Returns a dictionary of languages supported for translations in language code and language name order
@@ -39,7 +39,7 @@ public class NumberTranslatorFactory
 		}
 	}
 
-	#endregion Properites
+	#endregion Properties
 
 	#region Ctor
 
@@ -67,28 +67,29 @@ public class NumberTranslatorFactory
 	/// <summary>
 	/// Returns an instance of an <see cref="INumberTranslator"/> that uses the correct language and numeric settings
 	/// </summary>
-	/// <param name="languageCodeId"></param>
-	/// <param name="allowCurrency"></param>
-	/// <param name="allowDecimal"></param>
-	/// <param name="decimalPlaces"></param>
-	/// <param name="minValue"></param>
-	/// <param name="maxValue"></param>
+	/// <param name="languageCodeId">The language code for the translator</param>
+	/// <param name="allowCurrency">A flag indicating whether currency translations are permitted</param>
+	/// <param name="allowDecimal">A flag indicating whether decimal values are permitted in calculations</param>
+	/// <param name="decimalPlaces">The number of decimal places to report</param>
+	/// <param name="minValue">The minimum accepted value for translations</param>
+	/// <param name="maxValue">The maximum accepted value for translations</param>
+	/// <param name="useTitleCase">A flag indicating whether translations should use title-case or only lower-case</param>
 	/// <returns>An instance of the number translator with the required parameters</returns>
 	public INumberTranslator GetNumberTranslator(string languageCodeId, bool allowCurrency = false,
-		bool allowDecimal = false, int decimalPlaces = 0, double minValue = 0.0, double maxValue = 9999.0)
+		bool allowDecimal = false, int decimalPlaces = 0, double minValue = 0.0, double maxValue = 9999.0,
+		bool useTitleCase = true)
 	{
-		Type translatorType;
 		//	Check the language is supported
-		if (!_translatorTypes.TryGetValue(languageCodeId, out translatorType!))
+		if (!_translatorTypes.TryGetValue(languageCodeId, out var translatorType))
 			throw new NotImplementedException($"No translator supports language code {languageCodeId}");
 
 		//	Calculate the hashcode the instance with the specified settings would use
-		var translatorKey = Translators.NumberTranslator.CalculateKey(languageCodeId, allowCurrency, allowDecimal,
-			decimalPlaces, minValue, maxValue);
+		var translatorKey = Translators.NumberTranslator
+			.CalculateKey(languageCodeId, allowCurrency, allowDecimal, decimalPlaces, minValue, maxValue, useTitleCase);
 
 		//	Attempt to locate an instance of a cached copy of the translator
 		if (!_translators.TryGetValue(translatorKey, out var translator) &&
-				Activator.CreateInstance(translatorType, args: new object[] { languageCodeId, allowCurrency, allowDecimal, decimalPlaces, minValue, maxValue }, null) is INumberTranslator nt)
+				Activator.CreateInstance(translatorType, args: new object[] { allowDecimal, decimalPlaces, allowCurrency, minValue, maxValue, useTitleCase }, null) is INumberTranslator nt)
 		{
 			_translators[nt.GetKey()] = translator = nt;
 		}
