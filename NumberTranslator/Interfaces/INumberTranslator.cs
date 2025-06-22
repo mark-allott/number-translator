@@ -32,4 +32,9 @@ public interface INumberTranslator
 	/// Returns a key for the translator based on values specified in other properties
 	/// </summary>
 	string GetKey();
+
+	/// <summary>
+	/// Indicates whether output should use title-case, or all lower-case
+	/// </summary>
+	bool UseTitleCase { get; }
 }
