@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace NumberTranslator.WinForms
 {
 	public partial class NumberTranslatorForm : Form
@@ -20,19 +18,11 @@ namespace NumberTranslator.WinForms
 
 		private void translateButton_Click(object sender, EventArgs e)
 		{
-			var translator = _factory.GetNumberTranslator("en");
+			var translator = _factory.GetNumberTranslator("en", useTitleCase: capitaliseNumbersCheckBox.Checked);
 			var input = valueTextBox.Text.Trim();
 			try
 			{
 				var response = translator.Translate(input);
-				if (capitaliseNumbersCheckBox.Checked)
-				{
-					var ti = new CultureInfo(translator.LanguageCodeId).TextInfo;
-					var parts = response.Split(' ', StringSplitOptions.TrimEntries)
-						.Select(s => !s.Equals("and") ? ti.ToTitleCase(s) : s)
-						.ToArray();
-					response = string.Join(' ', parts);
-				}
 				translationTextBox.AppendText($"'{input}' translates to {response}" + Environment.NewLine);
 			}
 			catch (Exception exception)
