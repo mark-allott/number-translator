@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using NumberTranslator.Interfaces;
 
 namespace NumberTranslator.Translators;
@@ -19,6 +20,11 @@ public abstract class NumberTranslator
 	/// </summary>
 	protected ICurrencyNamingStrategy CurrencyNamingStrategy { get; }
 
+	/// <summary>
+	/// An instance of a concatenating words strategy for the translator
+	/// </summary>
+	protected IConcatenationStrategy ConcatenationStrategy { get; }
+
 	#endregion Fields
 
 	#region Ctor
@@ -33,9 +39,15 @@ public abstract class NumberTranslator
 	/// <param name="allowCurrency">Specifies whether the translation should include currency</param>
 	/// <param name="minimumValue">The minimum value permitted for the translator</param>
 	/// <param name="maximumValue">The maximum value permitted for the translator</param>
+	/// <param name="useTitleCase">
+	/// A flag indicating that the translation should be converted to title-case before returning to
+	/// the caller
+	/// </param>
 	/// <param name="currencyNamingStrategy">The strategy used to define currency unit naming</param>
+	/// <param name="concatenationStrategy">The strategy used to define concatenation words</param>
 	protected NumberTranslator(string languageCode, bool allowDecimals, int decimalPlaces, bool allowCurrency,
-		double minimumValue, double maximumValue, ICurrencyNamingStrategy currencyNamingStrategy)
+		double minimumValue, double maximumValue, bool useTitleCase, ICurrencyNamingStrategy currencyNamingStrategy,
+		IConcatenationStrategy concatenationStrategy)
 	{
 		//	Attempt to initialise a culture with the passed parameter
 		//	If it does not work, we won't proceed with it
@@ -45,6 +57,8 @@ public abstract class NumberTranslator
 		AllowDecimals = allowDecimals;
 		AllowCurrency = allowCurrency;
 		CurrencyNamingStrategy = currencyNamingStrategy;
+		ConcatenationStrategy = concatenationStrategy;
+		UseTitleCase = useTitleCase;
 		//	Decimal places are one of:
 		//		Zero - allowDecimals is false
 		//		The value of decimalPlaces if currency is not being used
@@ -73,7 +87,10 @@ public abstract class NumberTranslator
 	public string Translate(string text)
 	{
 		text = ValidateAndSanitise(text);
-		return DoTranslation(text);
+		var translation = DoTranslation(text);
+		return UseTitleCase
+			? EnsureTitleCase(translation)
+			: translation;
 	}
 
 	/// <inheritdoc />
@@ -116,8 +133,11 @@ public abstract class NumberTranslator
 	/// <inheritdoc />
 	public string GetKey()
 	{
-		return CalculateKey(LanguageCodeId, AllowCurrency, AllowDecimals, DecimalPlaces, MinimumValue, MaximumValue);
+		return CalculateKey(LanguageCodeId, AllowCurrency, AllowDecimals, DecimalPlaces, MinimumValue, MaximumValue, UseTitleCase);
 	}
+
+	/// <inheritdoc />
+	public bool UseTitleCase { get; }
 
 	#endregion INumberTranslator implementation
 
@@ -130,7 +150,7 @@ public abstract class NumberTranslator
 	/// <returns>The new hashcode</returns>
 	public override int GetHashCode()
 	{
-		return HashCode.Combine(CalculateKey(LanguageCodeId, AllowCurrency, AllowDecimals, DecimalPlaces, MinimumValue, MaximumValue));
+		return HashCode.Combine(CalculateKey(LanguageCodeId, AllowCurrency, AllowDecimals, DecimalPlaces, MinimumValue, MaximumValue, UseTitleCase));
 	}
 
 	#endregion Overrides from base classes
@@ -212,11 +232,27 @@ public abstract class NumberTranslator
 	/// <param name="decimalPlaces">The number of decimal places to use (if permitted)</param>
 	/// <param name="minValue">The minimum value permitted in a translation</param>
 	/// <param name="maxValue">The maximum value permitted in a translation</param>
-	/// <returns></returns>
+	/// <param name="useTitleCase">Flag indicating use of title-case or lower-case in output</param>
+	/// <returns>A string representing a key representing the inputs</returns>
 	public static string CalculateKey(string languageCodeId, bool allowCurrency, bool allowDecimals,
-		int decimalPlaces, double minValue, double maxValue)
+		int decimalPlaces, double minValue, double maxValue, bool useTitleCase)
 	{
-		return $"{languageCodeId}|{allowCurrency}|{allowDecimals}|{decimalPlaces}|{minValue}|{maxValue}";
+		return $"{languageCodeId}|{allowCurrency}|{allowDecimals}|{decimalPlaces}|{minValue}|{maxValue}|{useTitleCase}";
+	}
+
+	/// <summary>
+	/// Updates the translation output to ensure that all non-concatenation words are converted to
+	/// title-case using the specified language and its <see cref="TextInfo.ToTitleCase"/> method
+	/// </summary>
+	/// <param name="input">The translation output</param>
+	/// <returns>The <paramref name="input"/> with words changed to title-case</returns>
+	private string EnsureTitleCase(string input)
+	{
+		var ti = new CultureInfo(LanguageCodeId).TextInfo;
+		var parts = input.Split(' ', StringSplitOptions.TrimEntries)
+			.Select(s => !ConcatenationStrategy.Concatenators.Contains(s) ? ti.ToTitleCase(s) : s)
+			.ToArray();
+		return string.Join(' ', parts);
 	}
 
 	#endregion Methods

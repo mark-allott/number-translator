@@ -93,7 +93,7 @@ public class EnglishNumberTranslator
 	/// Default constructor
 	/// </summary>
 	public EnglishNumberTranslator()
-		: this(false, 0, false, 0.0d, 9999.0d)
+		: this(false, 0, false, 0.0d, 9999.0d, true)
 	{
 	}
 
@@ -105,13 +105,16 @@ public class EnglishNumberTranslator
 	/// <param name="allowCurrency">Specifies whether the translation should include currency</param>
 	/// <param name="minimumValue">The minimum value permitted for the translator</param>
 	/// <param name="maximumValue">The maximum value permitted for the translator</param>
-	public EnglishNumberTranslator(bool allowDecimals, int decimalPlaces, bool allowCurrency, double minimumValue, double maximumValue)
-		: this("en", allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue, new DefaultCurrencyNamingStrategy())
+	/// <param name="useTitleCase">A flag indicating whether the translation should be converted to title-case or remain in lower-case</param>
+	public EnglishNumberTranslator(bool allowDecimals, int decimalPlaces, bool allowCurrency, double minimumValue, double maximumValue, bool useTitleCase)
+		: this("en", allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue, useTitleCase,
+			new DefaultCurrencyNamingStrategy(), new EnglishNumberConcatenationStrategy())
 	{
 	}
 
 	/// <summary>
-	/// Alternate constructor for use by subclasses which need to set the specific language code - e.g. en-gb or en-us, etc.
+	/// Alternate constructor for use by subclasses which need to set the specific language code -
+	/// e.g. en-gb or en-us, etc.
 	/// </summary>
 	/// <param name="languageCode">The language code for the culture</param>
 	/// <param name="allowDecimals">Specifies whether the translation allows decimals</param>
@@ -119,10 +122,16 @@ public class EnglishNumberTranslator
 	/// <param name="allowCurrency">Specifies whether the translation should include currency</param>
 	/// <param name="minimumValue">The minimum value permitted for the translator</param>
 	/// <param name="maximumValue">The maximum value permitted for the translator</param>
+	/// <param name="useTitleCase">
+	/// A flag indicating whether the translation should be converted to title-case or remain in lower-case
+	/// </param>
 	/// <param name="currencyNamingStrategy">The naming strategy for currency units</param>
+	/// <param name="concatenationStrategy"></param>
 	protected EnglishNumberTranslator(string languageCode, bool allowDecimals, int decimalPlaces, bool allowCurrency,
-		double minimumValue, double maximumValue, ICurrencyNamingStrategy currencyNamingStrategy)
-		: base(languageCode, allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue, currencyNamingStrategy)
+		double minimumValue, double maximumValue, bool useTitleCase, ICurrencyNamingStrategy currencyNamingStrategy,
+		IConcatenationStrategy concatenationStrategy)
+		: base(languageCode, allowDecimals, decimalPlaces, allowCurrency, minimumValue, maximumValue, useTitleCase,
+			currencyNamingStrategy, concatenationStrategy)
 	{
 	}
 
@@ -167,7 +176,7 @@ public class EnglishNumberTranslator
 		{
 			//	If using currency, report the two-digit value and the fractional currency unit name
 			if (AllowCurrency)
-				sb.Append(" and ")
+				sb.Append($" {ConcatenationStrategy.Concatenator} ")
 					.Append(ConvertTwoDigit(fractionalPart))
 					.Append(string.IsNullOrWhiteSpace(CurrencyFractionalPartSingularName) ? "" : $" {CurrencyNamingStrategy.CurrencyFractionalPartName(fractionalPart)}");
 			else
@@ -186,7 +195,7 @@ public class EnglishNumberTranslator
 				//	Put digits back into correct order
 				digits.Reverse();
 				//	Append the digits of interest
-				sb.Append(" point ")
+				sb.Append($" {ConcatenationStrategy.DecimalConcatenator} ")
 					.Append(string.Join(" ", digits));
 			}
 		}
@@ -240,7 +249,7 @@ public class EnglishNumberTranslator
 			sb.Append(UnderTwenty[hundreds])
 				.Append(" hundred");
 			if (twoDigits > 0)
-				sb.Append(" and ");
+				sb.Append($" {ConcatenationStrategy.Concatenator} ");
 		}
 
 		if (twoDigits > 0)
@@ -265,7 +274,7 @@ public class EnglishNumberTranslator
 			if (v > 0)
 				sb.Append(ConvertThreeDigit(v))
 					.Append(i > 0 ? $" {NumberGroupName[i]}" : "")
-					.Append(remainder switch { 0 => "", < 100 => " and ", _ => ", " });
+					.Append(remainder switch { 0 => "", < 100 => $" {ConcatenationStrategy.Concatenator} ", _ => ", " });
 			value = remainder;
 		}
 

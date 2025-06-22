@@ -6,22 +6,25 @@ namespace NumberTranslator.Tests.Translators;
 [TestClass]
 public class AmericanEnglishNumberTranslatorTests
 {
-	private static readonly AmericanEnglishNumberTranslator DefaultTranslator = new(true, 5, true, -9999.0d, 9999.0d);
+	private static readonly AmericanEnglishNumberTranslator DefaultTitleCaseTranslator = new(true, 5, true, -9999.0d, 9999.0d, true);
+	private static readonly AmericanEnglishNumberTranslator DefaultLowerCaseTranslator = new(true, 5, true, -9999.0d, 9999.0d, false);
 
 	[TestMethod]
 	public void DefaultTranslatorHasExpectedDefaults()
 	{
-		DefaultTranslator.LanguageCodeId.Should().Be("en-US");
-		DefaultTranslator.LanguageName.Should().Be("English (United States)");
-		DefaultTranslator.AllowCurrency.Should().Be(true);
-		DefaultTranslator.AllowDecimals.Should().Be(true);
-		DefaultTranslator.DecimalPlaces.Should().Be(2);
-		DefaultTranslator.MinimumValue.Should().Be(-9999.0d);
-		DefaultTranslator.MaximumValue.Should().Be(9999.0d);
-		DefaultTranslator.CurrencyIntegralPartSingularName.Should().Be("dollar");
-		DefaultTranslator.CurrencyIntegralPartPluralName.Should().Be("dollars");
-		DefaultTranslator.CurrencyFractionalPartSingularName.Should().Be("cent");
-		DefaultTranslator.CurrencyFractionalPartPluralName.Should().Be("cents");
+		DefaultLowerCaseTranslator.LanguageCodeId.Should().Be("en-US");
+		DefaultLowerCaseTranslator.LanguageName.Should().Be("English (United States)");
+		DefaultLowerCaseTranslator.AllowCurrency.Should().Be(true);
+		DefaultLowerCaseTranslator.AllowDecimals.Should().Be(true);
+		DefaultLowerCaseTranslator.DecimalPlaces.Should().Be(2);
+		DefaultLowerCaseTranslator.MinimumValue.Should().Be(-9999.0d);
+		DefaultLowerCaseTranslator.MaximumValue.Should().Be(9999.0d);
+		DefaultLowerCaseTranslator.CurrencyIntegralPartSingularName.Should().Be("dollar");
+		DefaultLowerCaseTranslator.CurrencyIntegralPartPluralName.Should().Be("dollars");
+		DefaultLowerCaseTranslator.CurrencyFractionalPartSingularName.Should().Be("cent");
+		DefaultLowerCaseTranslator.CurrencyFractionalPartPluralName.Should().Be("cents");
+		DefaultLowerCaseTranslator.UseTitleCase.Should().Be(false);
+		DefaultTitleCaseTranslator.UseTitleCase.Should().Be(true);
 	}
 
 	[TestMethod]
@@ -48,9 +51,39 @@ public class AmericanEnglishNumberTranslatorTests
 	[DataRow(-21, "negative twenty-one dollars")]
 	[DataRow(-99, "negative ninety-nine dollars")]
 	[DataRow(-100, "negative one hundred dollars")]
-	public void DefaultTranslatorReturnsExpected(double value, string expected)
+	public void DefaultLowerCaseTranslatorReturnsExpected(double value, string expected)
 	{
-		string actual = DefaultTranslator.Translate($"{value}");
+		string actual = DefaultLowerCaseTranslator.Translate($"{value}");
+		actual.Should().Be(expected);
+	}
+
+	[TestMethod]
+	[DataRow(1.0d, "One Dollar")]
+	[DataRow(1.1d, "One Dollar and Ten Cents")]
+	[DataRow(1.12d, "One Dollar and Twelve Cents")]
+	[DataRow(1.123d, "One Dollar and Twelve Cents")]
+	[DataRow(1.1234d, "One Dollar and Twelve Cents")]
+	[DataRow(1.12345d, "One Dollar and Twelve Cents")]
+	//	Verify rounding of values to decimal places works as intended
+	[DataRow(1.124d, "One Dollar and Twelve Cents")]
+	[DataRow(1.125d, "One Dollar and Thirteen Cents")]
+	[DataRow(1.126d, "One Dollar and Thirteen Cents")]
+	//	Verify zero is not truncated if numbers are present afterwards
+	[DataRow(0.1d, "Zero Dollars and Ten Cents")]
+	[DataRow(0.01d, "Zero Dollars and One Cent")]
+	[DataRow(0.001d, "Zero Dollars")]
+	//	Check some negatives
+	[DataRow(-1, "Negative One Dollar")]
+	[DataRow(-2, "Negative Two Dollars")]
+	[DataRow(-10, "Negative Ten Dollars")]
+	[DataRow(-11, "Negative Eleven Dollars")]
+	[DataRow(-20, "Negative Twenty Dollars")]
+	[DataRow(-21, "Negative Twenty-One Dollars")]
+	[DataRow(-99, "Negative Ninety-Nine Dollars")]
+	[DataRow(-100, "Negative One Hundred Dollars")]
+	public void DefaultTitleCaseTranslatorReturnsExpected(double value, string expected)
+	{
+		string actual = DefaultTitleCaseTranslator.Translate($"{value}");
 		actual.Should().Be(expected);
 	}
 }
