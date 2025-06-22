@@ -1,3 +1,4 @@
+using NumberTranslator.Extensions;
 
 namespace NumberTranslator.WebService
 {
@@ -8,6 +9,7 @@ namespace NumberTranslator.WebService
 			var builder = WebApplication.CreateBuilder(args);
 
 			// Add services to the container.
+			builder.Services.AddAutoRegisterServices(typeof(NumberTranslatorFactory).Assembly);
 
 			builder.Services.AddControllers();
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -26,7 +28,6 @@ namespace NumberTranslator.WebService
 			app.UseHttpsRedirection();
 
 			app.UseAuthorization();
-
 
 			app.MapControllers();
 
