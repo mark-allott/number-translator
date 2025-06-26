@@ -154,7 +154,7 @@ public class EnglishNumberTranslator
 		//	Convert to absolute value
 		value = Math.Abs(value);
 		//	Extract integer portion of value
-		var integerPart = Convert.ToInt64(value);
+		var integerPart = Convert.ToInt64(Math.Floor(value));
 		//	Extract fractional part of value and convert to integer equivalent
 		var fractionalPart = Convert.ToInt64(Math.Pow(10, DecimalPlaces) * (value % 1));
 
