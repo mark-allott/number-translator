@@ -184,6 +184,8 @@ public class EnglishNumberTranslatorTests
 	[DataRow(0.000001d, "Zero")]
 	[DataRow(0.000005d, "Zero")]
 	[DataRow(0.000006d, "Zero point Zero Zero Zero Zero One")]
+	//	Test to make sure rounding when using the Convert.ToInt64 routines is handled correctly
+	[DataRow(1234.666, "One Thousand, Two Hundred and Thirty-Four point Six Six Six")]
 	public void DefaultTranslatorWithDecimalPlacesReturnsExpected(double value, string expected)
 	{
 		string actual = DefaultTranslatorWithDecimalPlaces.Translate($"{value}");
@@ -233,6 +235,8 @@ public class EnglishNumberTranslatorTests
 	[DataRow(-21, "Negative Twenty-One")]
 	[DataRow(-99, "Negative Ninety-Nine")]
 	[DataRow(-100, "Negative One Hundred")]
+	//	Test to make sure rounding when using the Convert.ToInt64 routines is handled correctly
+	[DataRow(1234.666, "One Thousand, Two Hundred and Thirty-Four and Sixty-Seven")]
 	public void DefaultTranslatorWithCurrencyAndNegativesReturnsExpected(double value, string expected)
 	{
 		string actual = DefaultTranslatorWithCurrencyAndNegatives.Translate($"{value}");
