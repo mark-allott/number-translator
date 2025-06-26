@@ -51,6 +51,8 @@ public class BritishEnglishNumberTranslatorTests
 	[DataRow(-21, "negative twenty-one pounds")]
 	[DataRow(-99, "negative ninety-nine pounds")]
 	[DataRow(-100, "negative one hundred pounds")]
+	//	Test to make sure rounding when using the Convert.ToInt64 routines is handled correctly
+	[DataRow(1234.666, "one thousand, two hundred and thirty-four pounds and sixty-seven pence")]
 	public void DefaultLowerCaseTranslatorReturnsExpected(double value, string expected)
 	{
 		string actual = DefaultLowerCaseTranslator.Translate($"{value}");
