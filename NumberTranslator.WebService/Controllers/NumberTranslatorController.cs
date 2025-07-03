@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NumberTranslator.Interfaces;
 using NumberTranslator.Models;
+using NumberTranslator.Translators;
 
 namespace NumberTranslator.WebService.Controllers
 {

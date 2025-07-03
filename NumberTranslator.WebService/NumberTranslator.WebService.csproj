@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NumberTranslator.Translators\NumberTranslator.Translators.csproj" />
     <ProjectReference Include="..\NumberTranslator\NumberTranslator.csproj" />
   </ItemGroup>
 

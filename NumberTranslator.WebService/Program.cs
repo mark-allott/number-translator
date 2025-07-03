@@ -1,4 +1,5 @@
 using NumberTranslator.Extensions;
+using NumberTranslator.Translators;
 
 namespace NumberTranslator.WebService
 {
