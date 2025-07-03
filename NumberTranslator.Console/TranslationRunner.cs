@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NumberTranslator.Interfaces;
-using NumberTranslator.Services;
+using NumberTranslator.Translators.Services;
 
 namespace NumberTranslator.Console;
 

@@ -33,7 +33,13 @@ namespace NumberTranslator.Console
 			hostBuilder.ConfigureServices(services =>
 			{
 				//	Auto-register any startup code
-				services.AddStartupRegistrations(typeof(IStartupRegistration).Assembly, typeof(Program).Assembly);
+				var assemblies = new[]
+				{
+					typeof(IStartupRegistration).Assembly,
+					typeof(Program).Assembly,
+					typeof(Translators.NumberTranslator).Assembly
+				};
+				services.AddStartupRegistrations(assemblies);
 
 				//	Add hosted service (program to run)
 				services.AddHostedService<TranslationRunner>();
