@@ -1,8 +1,7 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using NumberTranslator.Interfaces;
 
-namespace NumberTranslator.Services;
+namespace NumberTranslator.Translators.Services;
 
 /// <summary>
 /// Base class for all numeric translations

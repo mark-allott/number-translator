@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NumberTranslator.Interfaces;
 
-namespace NumberTranslator;
+namespace NumberTranslator.Translators;
 
 public class NumberTranslatorFactory
 	: IAutoRegister
