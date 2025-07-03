@@ -1,6 +1,6 @@
 ﻿using NumberTranslator.Interfaces;
 
-namespace NumberTranslator.Services;
+namespace NumberTranslator.Translators.Services;
 
 /// <summary>
 /// Forms the basis of a translation service
