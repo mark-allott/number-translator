@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NumberTranslator.Extensions;
 using NumberTranslator.Interfaces;
 using NumberTranslator.Translators;
+using NumberTranslator.Translators.Languages;
 
 namespace NumberTranslator.Tests;
 
