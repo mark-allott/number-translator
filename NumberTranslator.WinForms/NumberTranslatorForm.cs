@@ -1,3 +1,5 @@
+using NumberTranslator.Translators;
+
 namespace NumberTranslator.WinForms
 {
 	public partial class NumberTranslatorForm : Form
