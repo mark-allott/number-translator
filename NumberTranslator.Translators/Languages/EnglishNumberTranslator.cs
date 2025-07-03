@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using NumberTranslator.Interfaces;
 using NumberTranslator.Strategies;
 
-namespace NumberTranslator.Translators;
+namespace NumberTranslator.Translators.Languages;
 
 public class EnglishNumberTranslator
 	: NumberTranslator

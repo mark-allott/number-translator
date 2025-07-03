@@ -1,8 +1,7 @@
-﻿using System;
-using System.Text;
-using NumberTranslator.Translators;
+﻿using System.Text;
+using NumberTranslator.Translators.Languages;
 
-namespace NumberTranslator.Services;
+namespace NumberTranslator.Translators.Services;
 
 public class EnglishNumberTranslatorService
 	: NumberTranslatorService

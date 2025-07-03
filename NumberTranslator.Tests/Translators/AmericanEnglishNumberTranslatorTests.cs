@@ -1,5 +1,5 @@
 using FluentAssertions;
-using NumberTranslator.Translators;
+using NumberTranslator.Translators.Languages;
 
 namespace NumberTranslator.Tests.Translators;
 
