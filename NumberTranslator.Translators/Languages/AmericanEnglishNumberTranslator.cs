@@ -1,6 +1,6 @@
 ﻿using NumberTranslator.Strategies;
 
-namespace NumberTranslator.Translators;
+namespace NumberTranslator.Translators.Languages;
 
 public class AmericanEnglishNumberTranslator
 	: EnglishNumberTranslator

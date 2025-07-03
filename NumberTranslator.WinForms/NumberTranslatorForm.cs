@@ -1,4 +1,4 @@
-using NumberTranslator.Interfaces;
+using NumberTranslator.Translators;
 
 namespace NumberTranslator.WinForms
 {
